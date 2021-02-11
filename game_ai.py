@@ -1,6 +1,37 @@
 import game_logic
 import math, copy
 
+def minimax_ab(board, player, alfa, beta):
+    chosen_move = -1
+    if end_state(board):
+        return (state_score(board), chosen_move)
+    if player == 1:
+        value = -math.inf
+        for move in available_moves(board):
+            board[move[1]][move[0]] = 1
+            new_value = minimax_ab(board, 2, alfa, beta)[0]
+            board[move[1]][move[0]] = 0
+            if (new_value > value):
+                value = new_value
+                chosen_move = move
+            alfa = max(alfa, value)
+            if alfa >= beta:
+                break
+        return (value, chosen_move)
+    if player == 2:
+        value = math.inf
+        for move in available_moves(board):
+            board[move[1]][move[0]] = 2
+            new_value = minimax_ab(board, 1, alfa, beta)[0]
+            board[move[1]][move[0]] = 0
+            if (new_value < value):
+                value = new_value
+                chosen_move = move
+            beta = min(beta, value)
+            if beta <= alfa:
+                break            
+        return (value, chosen_move) 
+
 def minimax(board, player):
     chosen_move = -1
     if end_state(board):
@@ -43,7 +74,8 @@ def state_score(board):
         return 0
 
 def end_state(board):
-    if state_score(board) != 0 or len(available_moves(board)) == 0:
+    if state_score(board) != 0 or all(board[y][x]!=0 for x in range(len(board)) for y in range(len(board))):
+    #if state_score(board) != 0 or len(available_moves(board)) == 0:
         return True
     else:
         return False

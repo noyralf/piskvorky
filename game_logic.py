@@ -1,4 +1,6 @@
 import game_board, game_ai
+import math
+import timeit
 
 class NotEmptyError(Exception):
     pass
@@ -23,16 +25,18 @@ def move(board, game_round, player):
     game_board.print_board(board)
 
 def check_win(board, player):
-    for i in range(len(board)):
-        if board[i][0]==player and board[i][1]==player and board[i][2]==player:
+    lb = len(board)
+    for i in (range(lb)):
+        if all([x==player for x in board[i]]):
             return True
-        if board[0][i]==player and board[1][i]==player and board[2][i]==player:
-            return True 
-    if board[0][0]==player and board[1][1]==player and board[2][2]==player:
+        if all([board[y][i]==player for y in range(lb)]):
+            return True
+    if all([board[i][i]==player for i in range(lb)]):
         return True
-    if board[2][0]==player and board[1][1]==player and board[0][2]==player:
+    if all([board[lb - 1 - i][i]==player for i in range(lb)]):
         return True
     return False
+        
 
 def ai_move(board, game_round, player, move):
     print(f"Vitajte v kole {game_round}. Teraz je na rade hrac {player}. Hrac isiel na poziciu {move}")
@@ -44,7 +48,7 @@ def play(board):
     game_round = 1
     while True:
         if player == 2:
-            ai_move(board, game_round, player, game_ai.minimax(board, player)[1])
+            ai_move(board, game_round, player, game_ai.minimax_ab(board, player, -math.inf, math.inf)[1])
         else:   
             move(board, game_round, player)
         if check_win(board, player):
