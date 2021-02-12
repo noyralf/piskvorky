@@ -1,10 +1,28 @@
 import game_logic
-import math, copy
+import math
 
 memoized_values = {}
 flatten = lambda t: [item for sublist in t for item in sublist]
 
-def minimax_ab(board, player, alfa, beta):
+def ab_cached(board, player, alfa, beta):
+    global memoized_values
+    fboard = tuple(flatten(board))
+    if fboard in memoized_values:
+        val, a, b = memoized_values[fboard]
+        if a<=alfa and beta<=b:
+            return val
+        else:
+            alfa = min(alfa, a)
+            beta = max(beta, b)
+            val = minimax_ab(board, player, alfa, beta)
+            memoized_values[fboard] = val, alfa , beta
+            return val
+    else:
+        val = minimax_ab(board, player, alfa, beta)
+        memoized_values[fboard] = val, alfa , beta
+        return val     
+
+def minimax_ab(board, player, alfa, beta):   
     chosen_move = -1    
     if end_state(board):
         return (state_score(board), chosen_move)
@@ -12,7 +30,7 @@ def minimax_ab(board, player, alfa, beta):
         value = -math.inf
         for move in available_moves(board):
             board[move[1]][move[0]] = 1
-            new_value = minimax_ab(board, 2, alfa, beta)[0]
+            new_value = ab_cached(board, 2, alfa, beta)[0]
             board[move[1]][move[0]] = 0
             if (new_value > value):
                 value = new_value
@@ -25,7 +43,7 @@ def minimax_ab(board, player, alfa, beta):
         value = math.inf
         for move in available_moves(board):
             board[move[1]][move[0]] = 2
-            new_value = minimax_ab(board, 1, alfa, beta)[0]
+            new_value = ab_cached(board, 1, alfa, beta)[0]
             board[move[1]][move[0]] = 0
             if (new_value < value):
                 value = new_value

@@ -36,7 +36,6 @@ def check_win(board, player):
     if all([board[lb - 1 - i][i]==player for i in range(lb)]):
         return True
     return False
-        
 
 def ai_move(board, game_round, player, move):
     print(f"Vitajte v kole {game_round}. Teraz je na rade hrac {player}. Hrac isiel na poziciu {move}")
@@ -48,8 +47,11 @@ def play(board):
     game_round = 1
     while True:
         if player == 2:
+            start_time = timeit.default_timer()
+            ai_move(board, game_round, player, game_ai.ab_cached(board, player, -math.inf, math.inf)[1])
             #ai_move(board, game_round, player, game_ai.minimax_ab(board, player, -math.inf, math.inf)[1])
-            ai_move(board, game_round, player, game_ai.minimax(board, player)[1])
+            #ai_move(board, game_round, player, game_ai.minimax(board, player)[1])
+            print("Cas AI:", timeit.default_timer() - start_time)
         else:   
             move(board, game_round, player)
         if check_win(board, player):

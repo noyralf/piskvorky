@@ -3,9 +3,10 @@ import game_board
 
 def main():
     print("Vitajte v hre piskvorky!")
-
+    n = int(input("Zadaj velkost plochy:"))
+    
     board = []
-    game_board.init_board(board, 3)
+    game_board.init_board(board, n)
     game_board.print_board(board)
     
     game_logic.play(board)
