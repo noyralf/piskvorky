@@ -1,8 +1,11 @@
 import game_logic
 import math, copy
 
+memoized_values = {}
+flatten = lambda t: [item for sublist in t for item in sublist]
+
 def minimax_ab(board, player, alfa, beta):
-    chosen_move = -1
+    chosen_move = -1    
     if end_state(board):
         return (state_score(board), chosen_move)
     if player == 1:
@@ -29,10 +32,14 @@ def minimax_ab(board, player, alfa, beta):
                 chosen_move = move
             beta = min(beta, value)
             if beta <= alfa:
-                break            
+                break 
         return (value, chosen_move) 
 
-def minimax(board, player):
+def minimax(board, player):    
+    try:
+        return memoized_values[tuple(flatten(board))]
+    except:
+        pass
     chosen_move = -1
     if end_state(board):
         return (state_score(board), chosen_move)
@@ -45,6 +52,7 @@ def minimax(board, player):
             if (new_value > value):
                 value = new_value
                 chosen_move = move
+        memoized_values[tuple(flatten(board))] = (value, chosen_move)
         return (value, chosen_move)
     if player == 2:
         value = math.inf
@@ -55,6 +63,7 @@ def minimax(board, player):
             if (new_value < value):
                 value = new_value
                 chosen_move = move
+        memoized_values[tuple(flatten(board))] = (value, chosen_move)
         return (value, chosen_move)    
 
 def available_moves(board):

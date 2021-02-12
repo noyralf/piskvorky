@@ -48,7 +48,8 @@ def play(board):
     game_round = 1
     while True:
         if player == 2:
-            ai_move(board, game_round, player, game_ai.minimax_ab(board, player, -math.inf, math.inf)[1])
+            #ai_move(board, game_round, player, game_ai.minimax_ab(board, player, -math.inf, math.inf)[1])
+            ai_move(board, game_round, player, game_ai.minimax(board, player)[1])
         else:   
             move(board, game_round, player)
         if check_win(board, player):
@@ -56,7 +57,7 @@ def play(board):
             break
         player = 2 if player == 1 else 1
         game_round += 1
-        if game_round == 10:
+        if game_round == len(board)**2 + 1:
             print(f"Hra sa skoncila remizou!")
             break
                 
